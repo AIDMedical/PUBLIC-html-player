@@ -1,26 +1,54 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Audio Player</title>
   <style>
-    /* Remove margins and center the player */
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
+    /* Removes any default browser margins */
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      width: 100%; 
+      height: 100%; 
+      display: flex; /* Helps center the player */
+      align-items: center; 
     }
     audio {
-      width: 100%;
+      width: 100%; /* Makes the player fill the container */
     }
   </style>
 </head>
 <body>
 
-  <audio controls src="https://download.samplelib.com/mp3/sample-3s.mp3">
+  <audio id="audio-player" controls>
     Your browser does not support the audio element.
   </audio>
+
+  <script>
+    // This script runs inside the iframe as soon as it loads
+    window.onload = function() {
+      try {
+        // 1. Get the URL parameters from the iframe's own URL
+        const params = new URLSearchParams(window.location.search);
+        
+        // 2. Look for a parameter named 'audio_url'
+        // We decode it in case the URL has special characters
+        const audioUrl = decodeURIComponent(params.get('audio_url'));
+
+        // 3. Find the audio player element by its ID
+        const player = document.getElementById('audio-player');
+
+        // 4. If we found the player AND a valid URL, set the source
+        if (player && audioUrl && audioUrl !== 'null') {
+          player.src = audioUrl;
+          player.load(); // Tell the player to load the new file
+        }
+      } catch (e) {
+        console.error("Error loading audio:", e);
+      }
+    };
+  </script>
 
 </body>
 </html>
